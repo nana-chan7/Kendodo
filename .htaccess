@@ -1,0 +1,17 @@
+RewriteEngine On
+# ディレクトリへのアクセスの際に、index.htmlを表示するが、URLには表示しない
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+?)/?$ $1/index.html [L]
+# .html拡張子を持つURLを拡張子なしのURLに301リダイレクト（index.htmlは除外）
+RewriteCond %{REQUEST_URI} !/index\.html$
+RewriteCond %{THE_REQUEST} \s/+(.+)\.html[\s?]
+RewriteRule ^ /%1 [R=301,L]
+# 拡張子なしでアクセスされた場合、対応する.htmlファイルが存在すれば内部的にリダイレクト
+#（index.htmlは除外）
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteCond %{REQUEST_URI} !/index$
+RewriteRule ^(.+)$ $1.html [L]
+# デフォルトのインデックスファイルを設定
+DirectoryIndex index.html
